@@ -1,0 +1,4 @@
+#!/bin/bash
+
+
+rofi -show run -fullscreen True -lines 5 -line-margin 6 -padding 300 -bw 0 -font "hack 12"

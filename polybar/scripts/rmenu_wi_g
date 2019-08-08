@@ -1,0 +1,5 @@
+#!/bin/bash
+
+
+rofi -modi run,drun,window -lines 10 -padding 20 -width 50  -location 1 -yoffset 50 -xoffset 15 -show drun -sidebar-mode -columns 2 -font "hack 10"
+

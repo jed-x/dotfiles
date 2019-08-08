@@ -1,0 +1,472 @@
+;------------------------------------------------;
+;                                                ;
+;           Polybar config for favor             ;
+;                                                ;
+;------------------------------------------------;
+
+;=================================== Colors ===================================
+
+[colors]
+
+;it's ARGB so "cfl" is for transparency
+
+background      = ${xrdb:color0}
+background-alt  = ${xrdb:color2}
+background-unf  = ${xrdb:color0}
+background-mod0 = #3C5A46
+background-mod1 = #0D1022
+background-mod2 = #CC6666
+background-alrt = ${xrdb:color2}
+
+foreground = ${xrdb:color7:#222}
+foreground-alt = #FFFFFF
+primary = #FFFFFF
+secondary = #FFFFFF
+
+;==============================================================================
+
+[bar/Favor]
+
+;=================================== Modules ===================================
+
+modules-left = arch i3 player-mpris-tail
+modules-center =  xwindow 
+modules-right = wireless-network pacman-updates battery alsa date power
+
+;==================================== Fonts ====================================
+
+font-0 = sfmono:size=9;1
+;font-0 = Ubuntu:size=10;1
+font-1 = FontAwesome:fontformat=truetype:size=12;1
+font-3 = Font Awesome 5 Free:style=Regular:pixelsize=10;1
+font-4 = Font Awesome 5 Free:style=Solid:pixelsize=10;1
+font-5 = Font Awesome 5 Brands:pixelsize=10;1
+font-2 = sm4tik:pixelsize=10;1
+
+;===============================================================================
+
+;monitor = ${env:MONITOR:HDMI-1}
+width = 100%
+height = 35
+offset-x = 0%
+offset-y = 0%
+radius = 0.0
+fixed-center = true
+
+
+background = ${colors.background}
+foreground = ${colors.foreground}
+
+
+line-size = 2
+line-color = ${colors.background-alrt}
+
+border-top-size = 10
+border-bottom-size = 0
+border-right-size = 15
+border-left-size = 15
+border-color = #00000000
+
+padding-left = 1
+padding-right = 1
+
+module-margin-left = 0
+module-margin-right = 0
+
+;tray-position = hidden
+;tray-padding = 11
+;tray-transparent = false
+;tray-offset-y = 0
+;tray-offset-x = -0
+;tray-maxsize = 18
+;tray-detached = true
+;tray-background = #0063ff
+
+;wm-restack = bspwm
+wm-restack = i3
+
+;override-redirect = true
+
+;scroll-up = bspwm-desknext
+;scroll-down = bspwm-deskprev
+
+scroll-up = i3wm-wsnext
+scroll-down = i3wm-wsprev
+
+;=================================== i3 ========================================
+
+[module/i3]
+
+type = internal/i3
+
+strip-wsnumbers = true
+index-sort = true
+
+;label-focused-padding = 1
+;label-unfocused-padding = 1
+
+;label-focused-background = ${colors.background-alt}
+label-unfocused-background = ${colors.background-unf}
+
+;label-mode-padding = 0
+;label-mode-background = ${colors.background-unf}
+
+;label-visible-underline = #555555
+;label-visible-padding = 1
+;label-focused-margin = 1
+
+; Available tokens:
+;   %mode%
+; Default: %mode%
+;label-mode = %mode%
+;label-mode-padding = 0
+;label-mode-background = #e60053
+
+; Available tokens:
+;   %name%
+;   %icon%
+;   %index%
+;   %output%
+; Default: %icon%  
+label-focused = %name%
+label-focused-foreground = ${colors.background-alt}
+label-focused-background = ${colors.background}
+label-focused-underline = ${colors.background-alrt}
+label-focused-padding = 1
+
+; Available tokens:
+;   %name%
+;   %icon%
+;   %index%
+; Default: %name%
+label-unfocused = %icon% %name%
+label-unfocused-padding = 1
+
+; Available tokens:
+;   %name%
+;   %icon%
+;   %index%
+; Default: %icon%  %name%
+label-visible = %name%
+;label-visible-underline = #555555
+label-visible-padding = 1
+
+; Available tokens:
+;   %name%
+;   %icon%
+;   %index%
+; Default: %icon%  %name%
+label-urgent = %name%
+label-urgent-foreground = #000000
+label-urgent-background = ${colors.background-alrt}
+label-urgent-padding = 2
+
+
+;=================================== Applications ===================================
+
+[module/arch]
+type = custom/text
+content =  |
+;alt-icon = 
+content-padding = 1
+content-background = ${colors.background}
+content-foreground = ${colors.foreground}
+click-left = ~/.config/polybar/scripts/rmenu_g
+click-middle = ~/.config/polybar/scripts/rfull
+click-right = ~/.config/polybar/scripts/rmenu_wi_g
+
+;=================================== xwindow ========================================
+
+[module/xwindow]
+type = internal/xwindow
+label = %title%
+
+label-maxlen = 35
+
+;=================================== Clock ===================================
+
+[module/time]
+type = internal/date
+interval = 1.0
+date =  %H:%M
+
+;=================================== Weather ===================================
+
+[module/weather]
+type = custom/script
+interval = 60
+
+format-background = ${colors.background-alt}
+format = <label>
+format-prefix = "    "
+format-suffix = "   "
+format-prefix-foreground = ${colors.foreground-alt}
+exec = python ~/.config/polybar/scripts/weather.py
+
+;=================================== Player ===================================
+
+[module/player-mpris-tail]
+type = custom/script
+exec = ~/.config/polybar/scripts/player-mpris-tail.py -f '{icon} {artist} - {title}'
+tail = true
+label = "  | %output% "
+click-left = ~/.config/polybar/scripts/player-mpris-tail.py previous
+click-right = ~/.config/polybar/scripts/player-mpris-tail.py next
+click-middle = ~/.config/polybar/scripts/player-mpris-tail.py play-pause
+label-maxlen = 32
+label-ellipsis = true
+
+;=================================== Wireless ===================================
+
+[module/wireless-network]
+type = internal/network
+interface = wlp3s0
+interval = 3.0
+
+click-left = exec /home/favor/bin/rofi-wifi-menu/rofi-wifi-menu.sh &
+click-right = /home/favor/bin/rofi-wifi-menu/rofi-wifi-menu.sh &
+tail = true
+
+; All labels support the following tokens:
+;   %ifname%    [wireless+wired]
+;   %local_ip%  [wireless+wired]
+;   %local_ip6% [wireless+wired]
+;   %essid%     [wireless]
+;   %signal%    [wireless]
+;   %upspeed%   [wireless+wired]
+;   %downspeed% [wireless+wired]
+;   %linkspeed% [wired]
+
+format-connected-prefix = " "
+
+format-connected-background = ${colors.background}
+format-connected = "   %{A1:~/.config/polybar/scripts/rofi-wifi-menu.sh:}<ramp-signal>%{A}  "
+;format-connected-underline = #bd2c40
+label-connected =  
+;label-connected-maxlen = 36
+;label-connected-ellipsis = false
+
+format-disconnected = %{A1:~/.config/polybar/scripts/rofi-wifi-menu.sh:}no wifi :(%{A}
+format-disconnected-background = ${colors.background}
+format-disconnected-underline = ${colors.background-alrt}
+label-disconnected = %{A1:~/bin/rofi-wifi-menu/rofi-wifi-menu.sh:}no wifi :(%{A}
+label-disconnected-foreground = ${colors.background-alrt}
+
+ramp-signal-0 = "  "
+ramp-signal-1 = "  "
+ramp-signal-2 = "  "
+ramp-signal-3 = "  "
+ramp-signal-4 = "  "
+ramp-signal-foreground = ${colors.foreground}
+
+;=================================== Ethernet ===================================
+
+[module/wired-network]
+type = internal/network
+interface = enp0s25
+interval = 3.0
+
+;format-connected-underline = ${colors.background-alt}
+format-connected-prefix = ""
+format-connected-prefix-foreground = ${colors.foreground}
+label-connected = %local_ip%
+
+format-disconnected =
+;format-disconnected = <label-disconnected>
+;format-disconnected-underline = ${self.format-connected-underline}
+;label-disconnected = %ifname% disconnected
+;label-disconnected-foreground = ${colors.background-alt}
+
+;=================================== Date/Time ===================================
+
+[module/date]
+type = internal/date
+;interval = 5
+
+date = 
+date-alt = 
+
+time = %H:%M:%S
+time-alt = "  %a %b %d |  %I:%M %p"
+
+format-prefix-foreground = ${colors.foreground}
+;format-underline = ${colors.background-alt}
+
+label = %date% %time%
+
+;label = %time%
+
+;=================================== Backlight ===================================
+
+[module/backlight]
+type = internal/backlight
+card = intel_backlight
+format = <ramp> <label>
+label = 
+ramp-0 = 
+ramp-1 = 
+ramp-2 = 
+
+;=================================== Volume ===================================
+
+[module/alsa]
+type = internal/alsa
+ 
+format-volume = <ramp-volume> <label-volume>
+format-muted =  MUTED
+ 
+ramp-volume-0 = 
+ramp-volume-1 = 
+ramp-volume-2 = 
+
+;=================================== Uptime ===================================
+
+[module/uptime]
+type = custom/script
+exec = uptime | awk -F, '{sub(".*up ",x,$1);print $1}'
+interval = 100
+label = Uptime:%output%
+
+format-foreground = ${colors.foreground}
+format-background = ${colors.background}
+format-prefix = "  "
+
+;=================================== Updates ===================================
+
+[module/pacman-updates]
+type = custom/script
+;exec = yay -Qu | wc -l
+exec = (checkupdates; yay -Qum) | wc -l
+interval = 300
+label = %output%
+format-foreground = ${colors.foreground}
+format-background = ${colors.background}
+format-prefix = " "
+format-prefix-foreground = ${colors.foreground}
+;format-underline = ${colors.background-alrt}
+click-left = i3-msg exec ~/.config/polybar/scripts/notify-updates.sh
+click-right = exec pamac-manager
+
+;=================================== Battery ===================================
+
+[module/battery]
+type = internal/battery
+battery = BAT0
+adapter = AC
+full-at = 99
+
+format-charging-padding = 1
+format-discharging-padding = 1
+format-full-padding = 1
+
+format-full-background = ${colors.background}
+format-charging-background = ${colors.background}
+format-charging = "⁣ <animation-charging>  <label-charging>"
+;format-charging-underline = #bd2c40
+
+format-charging-suffix = " "
+
+format-discharging-background = ${colors.background-alt}
+format-discharging = "⁣  <ramp-capacity>  <label-discharging>  "
+;format-discharging-underline = ${self.format-charging-underline}
+
+format-full = "  <ramp-capacity> <label-full>" 
+format-full-prefix-foreground = ${colors.foreground}
+;format-full-underline = ${self.format-charging-underline}
+
+
+ramp-capacity-0 = 
+ramp-capacity-1 = 
+ramp-capacity-2 = 
+ramp-capacity-3 = 
+ramp-capacity-4 = 
+
+ramp-capacity-foreground = ${colors.foreground}
+
+animation-charging-0 = 
+animation-charging-1 = 
+animation-charging-2 = 
+animation-charging-3 = 
+animation-charging-4 = 
+animation-charging-foreground = ${colors.foreground}
+animation-charging-framerate = 750
+
+;=================================== Power Menu ===================================
+
+[module/power]
+type = custom/text
+content = 
+content-padding = 2
+content-background = ${colors.background}
+content-foreground = ${colors.foreground}
+click-left = /home/favor/.config/polybar/scripts/pmenu_g
+click-right = /home/favor/.config/polybar/scripts/pmenu_g
+
+;=================================== Settings ===================================
+
+[settings]
+screenchange-reload = true
+;compositing-background = xor
+;compositing-background = screen
+;compositing-foreground = source
+;compositing-border = over
+
+;=================================== WM ===================================
+
+[global/wm]
+margin-top = 5
+margin-bottom = 5
+
+;=================================== xKeyboard ===================================
+
+[module/xkeyboard]
+type = internal/xkeyboard
+blacklist-0 = num lock
+ 
+format-prefix = " "
+format-prefix-foreground = ${colors.foreground}
+format-prefix-underline = ${colors.background-alt}
+
+label-layout = %layout%
+label-layout-underline = ${colors.background-alt}
+
+label-indicator-padding = 2
+label-indicator-margin = 1
+label-indicator-background = ${colors.background}
+label-indicator-underline = ${colors.background-alt}
+
+;=================================== Filesystem ===================================
+
+[module/filesystem]
+type = internal/fs
+interval = 25
+ 
+mount-0 = /
+ 
+label-mounted = %{F#0a81f5}%mountpoint%%{F-}: %percentage_used%%
+label-unmounted = %mountpoint% not mounted
+label-unmounted-foreground = ${colors.foreground-alt}
+
+;=================================== CPU ===================================
+
+[module/cpu]
+type = internal/cpu
+interval = 2
+format-prefix = " "
+format-prefix-foreground = ${colors.foreground}
+format-prefix-background = ${colors.background}
+format-underline = ${colors.background-alt}
+label = %percentage%%
+
+;=================================== Memory ===================================
+
+[module/memory]
+type = internal/memory
+interval = 2
+format-prefix = " "
+format-prefix-foreground = ${colors.foreground}
+format-underline = ${colors.background-alt}
+label = %percentage_used%%
+
+;=======================================================================
+; vim:ft=dosini

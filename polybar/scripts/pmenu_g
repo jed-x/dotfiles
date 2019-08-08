@@ -1,0 +1,11 @@
+
+#!/bin/bash
+
+
+MENU="$(rofi -sep "|" -dmenu -i -p 'System' -location 3 -yoffset 50 -xoffset -15 -width 15 -hide-scrollbar -line-padding 4 -padding 20 -lines 4 -font "hack 10" <<< "Lock|Logout|Reboot|Shutdown")"
+            case "$MENU" in
+                *Lock) ~/bin/i3lock/bebop_lock -i ~/bin/i3lock/imgs/wallpaper/lockscreen.png -a ~/bin/i3lock/imgs/ ;;
+                *Logout) i3-msg exit;;
+                *Reboot) systemctl reboot ;;
+                *Shutdown) systemctl -i poweroff
+            esac
